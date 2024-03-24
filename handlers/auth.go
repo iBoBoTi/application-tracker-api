@@ -6,9 +6,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/iBoBoTi/ats/internal/dtos"
+	"github.com/iBoBoTi/ats/internal/validator"
 	"github.com/iBoBoTi/ats/server"
 	"github.com/iBoBoTi/ats/service"
-	"github.com/iBoBoTi/ats/internal/validator"
 )
 
 type AuthHandler interface {

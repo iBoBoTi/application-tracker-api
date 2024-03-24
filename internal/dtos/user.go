@@ -5,10 +5,9 @@ import (
 	"regexp"
 	"time"
 
-	
 	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 	"github.com/iBoBoTi/ats/internal/validator"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (

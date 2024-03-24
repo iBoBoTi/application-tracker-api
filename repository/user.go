@@ -46,7 +46,7 @@ func (u *userRepository) FindUserByEmail(email string) (*models.User, error) {
 func (u *userRepository) EmailExist(email string) (bool, error) {
 	var num int
 	tx := u.db.Raw("SELECT CASE WHEN EXISTS (SELECT * FROM users WHERE email = ?) THEN CAST(1 AS BIT)ELSE CAST(0 AS BIT) END", "admin").Scan(&num)
-	if num == 1{
+	if num == 1 {
 		return true, tx.Error
 	}
 	return false, tx.Error

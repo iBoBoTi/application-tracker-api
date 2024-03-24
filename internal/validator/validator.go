@@ -14,7 +14,6 @@ func (e *ValidationError) Error() string {
 
 type Validator struct {
 	Errors ErrorFields
-
 }
 
 // New returns a new Validator instance.

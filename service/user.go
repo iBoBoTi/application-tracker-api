@@ -26,7 +26,7 @@ func (u *userService) CreateUser(userDto *dtos.User) (*dtos.User, error) {
 	v := validator.NewValidator()
 
 	emailExist, err := u.userRepository.EmailExist(userDto.Email)
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 	v.Check(emailExist, "email", "email already exist")
