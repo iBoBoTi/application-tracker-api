@@ -2,9 +2,14 @@ package server
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/iBoBoTi/ats/internal/log"
+	"net/http"
+	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/iBoBoTi/ats/internal/log"
+	"github.com/iBoBoTi/ats/internal/models"
 )
 
 const (
@@ -57,54 +62,62 @@ func CustomLogger(l log.Logger) gin.HandlerFunc {
 
 // ApplyAuthentication is a middleware that checks for the authorization header
 // the function does not check if the user is activated or not
-// func (srv *Server) ApplyAuthentication() gin.HandlerFunc {
-// 	return func(c *gin.Context) {
+func (srv *Server) ApplyAuthentication() gin.HandlerFunc {
+	return func(c *gin.Context) {
 
-// 		c.Header("Vary", AuthorizationHeaderKey)
+		c.Header("Vary", AuthorizationHeaderKey)
 
-// 		authHeader := c.GetHeader(AuthorizationHeaderKey)
-// 		if authHeader == "" {
-// 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-// 				"error": "invalid authorization header",
-// 			})
-// 			return
-// 		}
+		authHeader := c.GetHeader(AuthorizationHeaderKey)
+		if authHeader == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "invalid authorization header",
+			})
+			return
+		}
 
-// 		headerParts := strings.Split(authHeader, " ")
-// 		if len(headerParts) != 2 || headerParts[0] != AuthorizationTypeBearer {
-// 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-// 				"error": "invalid authorization header",
-// 			})
-// 			return
-// 		}
+		headerParts := strings.Split(authHeader, " ")
+		if len(headerParts) != 2 || headerParts[0] != AuthorizationTypeBearer {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "invalid authorization header",
+			})
+			return
+		}
 
-// 		token := headerParts[1]
-// 		payload, err := srv.TokenMaker.VerifyToken(token)
+		token := headerParts[1]
+		payload, err := srv.TokenMaker.VerifyToken(token)
 
-// 		if err != nil {
-// 			if strings.Contains(err.Error(), "expired") {
-// 				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-// 					"error": "token has expired",
-// 				})
-// 				return
-// 			}
-// 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-// 				"error": "invalid authorization token",
-// 			})
-// 			return
-// 		}
+		if err != nil {
+			if strings.Contains(err.Error(), "expired") {
+				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+					"error": "token has expired",
+				})
+				return
+			}
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "invalid authorization token",
+			})
+			return
+		}
 
-// 		// user, err := srv.Store.GetUser(c, payload.UserID)
-// 		// if err != nil {
-// 		// 	c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-// 		// 		"error": "invalid authorization token",
-// 		// 	})
-// 		// 	return
-// 		// }
+		user, err := findUserByID(srv.DB, payload.UserID)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "invalid authorization token",
+			})
+			return
+		}
 
-// 		srv.ContextSetUser(c, &user)
-// 		srv.ContextSetToken(c, payload)
+		srv.ContextSetUser(c, user)
+		srv.ContextSetToken(c, payload)
 
-// 		c.Next()
-// 	}
-// }
+		c.Next()
+	}
+}
+
+func findUserByID(db *models.Database,id uuid.UUID) (*models.User, error) {
+	user := &models.User{}
+	if err := db.GormDB.Model(&models.User{}).Where("id", id).First(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
