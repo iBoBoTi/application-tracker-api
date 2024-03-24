@@ -1,9 +1,11 @@
 package server
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/iBoBoTi/ats/internal/validator"
 )
 
 type Data struct {
@@ -14,7 +16,7 @@ type Data struct {
 	Status    string      `json:"status,omitempty"`
 }
 
-func (srv *Server) SuccessJSONResponse(c *gin.Context, status int, message string, data interface{}) {
+func SuccessJSONResponse(c *gin.Context, status int, message string, data interface{}) {
 
 	responseData := Data{
 		Message:   message,
@@ -26,7 +28,7 @@ func (srv *Server) SuccessJSONResponse(c *gin.Context, status int, message strin
 	c.JSON(status, responseData)
 }
 
-func (srv *Server) ErrorJSONResponse(c *gin.Context, status int, errs ...error) {
+func ErrorJSONResponse(c *gin.Context, status int, errs ...error) {
 
 	responseData := Data{
 		Message:   "error processing request",
@@ -44,4 +46,16 @@ func (srv *Server) ErrorJSONResponse(c *gin.Context, status int, errs ...error) 
 	}
 
 	c.JSON(status, responseData)
+}
+
+func SendValidationError(ctx *gin.Context, errors *validator.ValidationError) {
+	responseData := Data{
+		Errors:    errors.Fields,
+		Message:   errors.Message,
+		Status:    http.StatusText(http.StatusUnprocessableEntity),
+		Timestamp: time.Now().Format(time.RFC850),
+	}
+
+	ctx.JSON(http.StatusUnprocessableEntity, responseData)
+
 }

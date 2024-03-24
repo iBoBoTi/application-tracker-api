@@ -3,7 +3,7 @@ package server
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/iBoBoTi/ats/log"
+	"github.com/iBoBoTi/ats/internal/log"
 	"time"
 )
 

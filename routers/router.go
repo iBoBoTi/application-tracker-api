@@ -3,7 +3,9 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/iBoBoTi/ats/handlers"
+	"github.com/iBoBoTi/ats/repository"
 	"github.com/iBoBoTi/ats/server"
+	"github.com/iBoBoTi/ats/service"
 )
 
 const (
@@ -31,7 +33,9 @@ func SetupRouter(srv *server.Server) {
 	// v1.Use(srv.ApplyAuthentication())
 
 	v1.GET("/health-check", handlers.NewHealthController(srv).HealthCheck)
-	// v1.GET("/common/banks", banks.GetAllBanks(srv))
+
+	authHandler := handlers.NewAuthHandler(service.NewUserService(repository.NewUserRepository(srv.DB.GormDB)))
+	v1.POST("/users/signup", authHandler.SignUp)
 
 	// authCrt := auth.NewAuthController(srv)
 	// v1.POST("/users/login", authCrt.LoginUser)

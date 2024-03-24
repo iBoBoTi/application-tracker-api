@@ -6,9 +6,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/iBoBoTi/ats/config"
-	logger "github.com/iBoBoTi/ats/log"
-	"github.com/iBoBoTi/ats/models"
+	"github.com/iBoBoTi/ats/internal/config"
+	logger "github.com/iBoBoTi/ats/internal/log"
+	"github.com/iBoBoTi/ats/internal/models"
 	"github.com/iBoBoTi/ats/routers"
 	"github.com/iBoBoTi/ats/server"
 )

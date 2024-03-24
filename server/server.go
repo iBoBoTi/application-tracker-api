@@ -11,9 +11,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/iBoBoTi/ats/config"
-	"github.com/iBoBoTi/ats/log"
-	"github.com/iBoBoTi/ats/models"
+	"github.com/iBoBoTi/ats/internal/config"
+	"github.com/iBoBoTi/ats/internal/log"
+	"github.com/iBoBoTi/ats/internal/models"
 )
 
 type Server struct {
