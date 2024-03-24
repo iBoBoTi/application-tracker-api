@@ -14,6 +14,7 @@ import (
 	"github.com/iBoBoTi/ats/internal/config"
 	"github.com/iBoBoTi/ats/internal/log"
 	"github.com/iBoBoTi/ats/internal/models"
+	"github.com/iBoBoTi/ats/internal/security"
 )
 
 type Server struct {
@@ -25,26 +26,21 @@ type Server struct {
 	BuildTime string
 	Version   string
 	// Authenticator           *security.Authenticator
-	// TokenMaker              security.Maker
+	TokenMaker security.Maker
 }
 
 func NewServer(cfg config.Config, db *models.Database, logger log.Logger) (*Server, error) {
 
-	// tokenMaker, err := security.NewPasetoMaker(cfg.TokenSymmetricKey)
-	// if err != nil {
-	// 	return nil, errors.New("cannot create a token maker")
-	// }
+	tokenMaker, err := security.NewPasetoMaker(cfg.TokenSymmetricKey)
+	if err != nil {
+		return nil, errors.New("cannot create a token maker")
+	}
 
 	server := &Server{
-		Config: cfg,
-		Logger: logger,
-		DB:     db,
-		// Authenticator: &security.Authenticator{
-		// 	Provider:   security.NewEmailProvider(store, logger),
-		// 	Checker:    security.NewUserChecker(logger),
-		// 	TokenMaker: tokenMaker,
-		// },
-
+		Config:     cfg,
+		Logger:     logger,
+		DB:         db,
+		TokenMaker: tokenMaker,
 	}
 	return server, nil
 }

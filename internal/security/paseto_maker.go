@@ -9,6 +9,9 @@ import (
 	"golang.org/x/crypto/chacha20poly1305"
 
 	"github.com/o1egl/paseto"
+
+	appError "github.com/iBoBoTi/ats/internal/errors"
+	"github.com/iBoBoTi/ats/internal/models"
 )
 
 // PasetoMaker is a Paseto token maker
@@ -30,10 +33,23 @@ func NewPasetoMaker(symmetricKey string) (Maker, error) {
 	return &maker, nil
 }
 
-// CreateToken creates a new token for a specific username and duration
-func (m *PasetoMaker) CreateToken(userID uuid.UUID, duration time.Duration, version int64, scope string) (string, *Payload, error) {
+func (m *PasetoMaker) GenerateAuthAccessToken(user *models.User, payload *AuthPayload, duration time.Duration) error {
 
-	payload, err := NewPayload(userID, duration, version, scope)
+	accessToken, accessTokenPayload, err := m.CreateToken(user.ID, duration, TokenScopeAccess)
+	if err != nil {
+		return appError.ErrInternalServer
+	}
+	payload.Data["accessToken"] = map[string]any{
+		"token":     accessToken,
+		"expiresAt": accessTokenPayload.ExpiredAt,
+	}
+	return nil
+}
+
+// CreateToken creates a new token for a specific username and duration
+func (m *PasetoMaker) CreateToken(userID uuid.UUID, duration time.Duration, scope string) (string, *Payload, error) {
+
+	payload, err := NewPayload(userID, duration, scope)
 	if err != nil {
 		return "", nil, err
 	}
