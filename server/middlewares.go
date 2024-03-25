@@ -114,7 +114,7 @@ func (srv *Server) ApplyAuthentication() gin.HandlerFunc {
 	}
 }
 
-func findUserByID(db *models.Database,id uuid.UUID) (*models.User, error) {
+func findUserByID(db *models.Database, id uuid.UUID) (*models.User, error) {
 	user := &models.User{}
 	if err := db.GormDB.Model(&models.User{}).Where("id", id).First(user).Error; err != nil {
 		return nil, err

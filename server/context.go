@@ -19,7 +19,7 @@ func (srv *Server) ContextSetUser(c *gin.Context, user *models.User) *gin.Contex
 }
 
 // ContextSetToken sets the user in the context
-func (srv *Server) ContextSetToken(c *gin.Context, payload  *security.Payload) *gin.Context {
+func (srv *Server) ContextSetToken(c *gin.Context, payload *security.Payload) *gin.Context {
 	c.Set(ContextToken, payload)
 	return c
 }
