@@ -30,36 +30,21 @@ func SetupRouter(srv *server.Server) {
 
 	v1 := router.Group("/api/v1")
 
-	// v1.Use(srv.ApplyAuthentication())
-
 	v1.GET("/health-check", handlers.NewHealthController(srv).HealthCheck)
 
 	authHandler := handlers.NewAuthHandler(service.NewUserService(srv.TokenMaker, repository.NewUserRepository(srv.DB.GormDB)))
 	v1.POST("/users/login", authHandler.Login)
 	v1.POST("/users/signup", authHandler.SignUp)
 
-	// authCrt := auth.NewAuthController(srv)
-	// v1.POST("/users/login", authCrt.LoginUser)
-	// v1.POST("/users/refresh-token", authCrt.UserRefreshToken)
-	// v1.POST("/users/create", authCrt.CreateAccount)
-	// v1.POST("/users/verify-by-token", authCrt.VerifyUserAccountByToken)
-	// v1.POST("/users/forgot-password", authCrt.ForgotPassword)
-	// v1.POST("/users/tokens/check", authCrt.ResetPasswordTokenCheck)
-	// v1.POST("/users/reset-password", authCrt.ResetPassword)
+	jobPostHandler := handlers.NewJobPostingHandler(srv, service.NewJobPostingService(repository.NewJobPostRepository(srv.DB.GormDB)))
 
-	// v1.GET("/currencies", currency.NewCurrencyController(srv).GetActiveCurrencies)
-	// v1.POST("/resend-token", authCrt.ResendToken)
+	v1.GET("/job-posts", jobPostHandler.GetAllJobPosts)
+	v1.GET("/job-posts/:id", jobPostHandler.GetJobPostByID)
 
-	// v1.GET("/quotes", exchangerate.NewExchangeRateController(srv).GetQuotesForPublic)
-
-	// internal := v1.Group("/internal")
-	// internal.POST("/user/impersonate", authCrt.ImpersonateUser)
-
-	// // register user routes/endpoint
-	// // For authenticated users only
-	// authRoute := v1.Group("/")
-	// authRoute.Use(srv.CheckIfBanned(), srv.LogUserAction())
-	// registerUserRoutes(authRoute, srv)
+	v1.Use(srv.ApplyAuthentication())
+	v1.POST("/users/job-posts", jobPostHandler.CreateJobPost)
+	v1.GET("/users/job-posts", jobPostHandler.GetUserJobPosts)
+	v1.GET("/users/job-posts/:id", jobPostHandler.GetUserJobPostByID)
 
 	srv.Router = router
 

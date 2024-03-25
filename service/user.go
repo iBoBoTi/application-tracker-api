@@ -39,7 +39,7 @@ func (u *userService) CreateUser(userDto *dtos.User) (*dtos.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	v.Check(emailExist, "email", "email already exist")
+	v.Check(!emailExist, "email", "email already exist")
 
 	if !userDto.Validate(v) {
 		return nil, validator.NewValidationError("validation failed", v.Errors)
@@ -69,7 +69,7 @@ func (u *userService) Login(loginRequest *dtos.LoginRequest) (*security.AuthPayl
 		return nil, err
 	}
 
-	if emailExist {
+	if !emailExist {
 		return nil, fmt.Errorf("%v: email not found", appError.ErrNotFound)
 	}
 
