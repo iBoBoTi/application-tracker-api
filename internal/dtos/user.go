@@ -58,11 +58,6 @@ func (u *User) HashPassword() error {
 	return nil
 }
 
-// CheckPassword checks if plainPassword matches hashedPassword
-func CheckPassword(plainPassword, hashedPassword string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(plainPassword))
-}
-
 // IsEmail returns true if a string is a valid email address.
 func IsEmail(value string) bool {
 	if len(value) > 254 {
