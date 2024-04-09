@@ -8,6 +8,7 @@ import (
 	"mime/multipart"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/iBoBoTi/ats/internal/dtos"
 	appError "github.com/iBoBoTi/ats/internal/errors"
 	"github.com/iBoBoTi/ats/internal/mappers"
@@ -20,6 +21,10 @@ import (
 
 type ApplicantService interface {
 	CreateApplicant(applicant *dtos.Applicant, file multipart.File) error
+	GetAllApplicantsByJobIDPaginated(jobID uuid.UUID, paginateReq *dtos.PaginatedRequest) ([]dtos.Applicant, error)
+	GetQualifiedApplicantsByJobIDPaginated(jobID uuid.UUID, paginateReq *dtos.PaginatedRequest) ([]dtos.Applicant, error)
+	GetUnQualifiedApplicantsByJobIDPaginated(jobID uuid.UUID, paginateReq *dtos.PaginatedRequest) ([]dtos.Applicant, error)
+	GetApplicantByJobID(id, jobID uuid.UUID) (*dtos.Applicant, error)
 }
 
 type applicantService struct {
@@ -82,6 +87,77 @@ func (a *applicantService) CreateApplicant(applicant *dtos.Applicant, file multi
 	applicantModel.Resume = content
 
 	return a.applicantRepository.CreateApplicant(applicantModel)
+}
+
+func (a *applicantService) GetAllApplicantsByJobIDPaginated(jobID uuid.UUID, paginateReq *dtos.PaginatedRequest) ([]dtos.Applicant, error) {
+
+	paginateReq.Normalize()
+
+	applicantsModels, err := a.applicantRepository.GetAllApplicantsByJobIDPaginated(jobID, int(paginateReq.Limit), int(paginateReq.Page))
+	if err != nil {
+		return nil, err
+	}
+
+	applicantDtos := make([]dtos.Applicant, 0)
+	if len(applicantsModels) > 0 {
+		for _, applicant := range applicantsModels {
+			applicantDto := mappers.ApplicantModelMapToApplicantDto(&applicant)
+			applicantDtos = append(applicantDtos, *applicantDto)
+		}
+	}
+
+	return applicantDtos, nil
+}
+
+func (a *applicantService) GetQualifiedApplicantsByJobIDPaginated(jobID uuid.UUID, paginateReq *dtos.PaginatedRequest) ([]dtos.Applicant, error) {
+
+	paginateReq.Normalize()
+
+	applicantsModels, err := a.applicantRepository.GetQualifiedApplicantsByJobIDPaginated(jobID, int(paginateReq.Limit), int(paginateReq.Page))
+	if err != nil {
+		return nil, err
+	}
+
+	applicantDtos := make([]dtos.Applicant, 0)
+	if len(applicantsModels) > 0 {
+		for _, applicant := range applicantsModels {
+			applicantDto := mappers.ApplicantModelMapToApplicantDto(&applicant)
+			applicantDtos = append(applicantDtos, *applicantDto)
+		}
+	}
+
+	return applicantDtos, nil
+}
+
+func (a *applicantService) GetUnQualifiedApplicantsByJobIDPaginated(jobID uuid.UUID, paginateReq *dtos.PaginatedRequest) ([]dtos.Applicant, error) {
+
+	paginateReq.Normalize()
+
+	applicantsModels, err := a.applicantRepository.GetUnQualifiedApplicantsByJobIDPaginated(jobID, int(paginateReq.Limit), int(paginateReq.Page))
+	if err != nil {
+		return nil, err
+	}
+
+	applicantDtos := make([]dtos.Applicant, 0)
+	if len(applicantsModels) > 0 {
+		for _, applicant := range applicantsModels {
+			applicantDto := mappers.ApplicantModelMapToApplicantDto(&applicant)
+			applicantDtos = append(applicantDtos, *applicantDto)
+		}
+	}
+
+	return applicantDtos, nil
+}
+
+func (a *applicantService) GetApplicantByJobID(id, jobID uuid.UUID) (*dtos.Applicant, error) {
+
+	applicantModel, err := a.applicantRepository.GetApplicantByJobID(id, jobID)
+	if err != nil {
+		return nil, err
+	}
+	log.Println("GOT HERE TOO")
+
+	return mappers.ApplicantModelMapToApplicantDto(applicantModel), nil
 }
 
 func ExtractTextFromPDF(file multipart.File) (string, error) {

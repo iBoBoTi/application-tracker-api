@@ -4,7 +4,7 @@ const defaultLimit = 10
 
 type PaginatedRequest struct {
 	Page  int `json:"page" form:"page"`
-	Limit int `json:"limit" form:"limit"`
+	Limit int `json:"-" form:"limit"`
 }
 
 func (r *PaginatedRequest) Normalize() {

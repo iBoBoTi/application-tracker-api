@@ -49,6 +49,11 @@ func SetupRouter(srv *server.Server) {
 	v1.GET("/users/job-posts", jobPostHandler.GetUserJobPosts)
 	v1.GET("/users/job-posts/:id", jobPostHandler.GetUserJobPostByID)
 
+	v1.GET("/users/job-posts/:id/applicants", applicantHandler.GetAllApplicantsByJobID)
+	v1.GET("/users/job-posts/:id/applicants/qualified", applicantHandler.GetQualifiedApplicantsByJobIDPaginated)
+	v1.GET("/users/job-posts/:id/applicants/unqualified", applicantHandler.GetUnQualifiedApplicantsByJobIDPaginated)
+	v1.GET("/users/job-posts/:id/applicants/:applicant_id", applicantHandler.GetApplicantByJobID)
+
 	srv.Router = router
 
 }

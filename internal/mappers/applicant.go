@@ -17,3 +17,17 @@ func ApplicantDtoMapToApplicantModel(applicantDto *dtos.Applicant, file multipar
 		ResumeFileName:    applicantDto.ResumeFileDetails.NewFileName,
 	}
 }
+
+func ApplicantModelMapToApplicantDto(applicantModel *models.Applicant) *dtos.Applicant {
+	return &dtos.Applicant{
+		ID:                applicantModel.ID,
+		FirstName:         applicantModel.FirstName,
+		LastName:          applicantModel.LastName,
+		Email:             applicantModel.Email,
+		YearsOfExperience: applicantModel.YearsOfExperience,
+		JobID:             applicantModel.JobID,
+		IsQualified:       applicantModel.IsQualified,
+		CreatedAt:         applicantModel.CreatedAt,
+		UpdatedAt:         applicantModel.UpdatedAt,
+	}
+}

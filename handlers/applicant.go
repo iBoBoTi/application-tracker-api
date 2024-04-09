@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -63,4 +64,97 @@ func (a *applicantHandler) CreateApplicant(ctx *gin.Context) {
 	}
 
 	server.SuccessJSONResponse(ctx, http.StatusCreated, "applicant created successfully", nil)
+}
+
+func (a *applicantHandler) GetAllApplicantsByJobID(ctx *gin.Context) {
+	jobID, err := uuid.Parse(ctx.Param("id"))
+	if err != nil {
+		server.ErrorJSONResponse(ctx, http.StatusUnprocessableEntity, errors.New("invalid job id param"))
+		return
+	}
+
+	var req dtos.PaginatedRequest
+
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		server.ErrorJSONResponse(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	applicants, err := a.applicantService.GetAllApplicantsByJobIDPaginated(jobID, &req)
+	if err != nil {
+		server.ErrorJSONResponse(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	server.SuccessJSONResponse(ctx, http.StatusOK, "applicants retrieved successfully", applicants)
+}
+
+func (a *applicantHandler) GetQualifiedApplicantsByJobIDPaginated(ctx *gin.Context) {
+	jobID, err := uuid.Parse(ctx.Param("id"))
+	if err != nil {
+		server.ErrorJSONResponse(ctx, http.StatusUnprocessableEntity, errors.New("invalid job_id param"))
+		return
+	}
+
+	var req dtos.PaginatedRequest
+
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		server.ErrorJSONResponse(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	applicants, err := a.applicantService.GetQualifiedApplicantsByJobIDPaginated(jobID, &req)
+	if err != nil {
+		server.ErrorJSONResponse(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	server.SuccessJSONResponse(ctx, http.StatusOK, "applicants retrieved successfully", applicants)
+}
+
+func (a *applicantHandler) GetUnQualifiedApplicantsByJobIDPaginated(ctx *gin.Context) {
+	jobID, err := uuid.Parse(ctx.Param("id"))
+	if err != nil {
+		server.ErrorJSONResponse(ctx, http.StatusUnprocessableEntity, errors.New("invalid job id param"))
+		return
+	}
+
+	var req dtos.PaginatedRequest
+
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		server.ErrorJSONResponse(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	applicants, err := a.applicantService.GetUnQualifiedApplicantsByJobIDPaginated(jobID, &req)
+	if err != nil {
+		server.ErrorJSONResponse(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	server.SuccessJSONResponse(ctx, http.StatusOK, "applicants retrieved successfully", applicants)
+}
+
+func (a *applicantHandler) GetApplicantByJobID(ctx *gin.Context) {
+	jobID, err := uuid.Parse(ctx.Param("id"))
+	if err != nil {
+		server.ErrorJSONResponse(ctx, http.StatusUnprocessableEntity, errors.New("invalid job id param"))
+		return
+	}
+
+	id, err := uuid.Parse(ctx.Param("applicant_id"))
+	if err != nil {
+		server.ErrorJSONResponse(ctx, http.StatusUnprocessableEntity, errors.New("invalid applicant id param"))
+		return
+	}
+
+	log.Println("HEEEEEEEEEEEEEERRRRRR")
+
+	applicant, err := a.applicantService.GetApplicantByJobID(id, jobID)
+	if err != nil {
+		server.ErrorJSONResponse(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	server.SuccessJSONResponse(ctx, http.StatusOK, "applicant retrieved successfully", applicant)
 }
