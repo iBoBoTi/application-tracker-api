@@ -8,27 +8,27 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestJobPostValidate(t *testing.T){
-	
-	testCases := []struct{
-		name string
+func TestJobPostValidate(t *testing.T) {
+
+	testCases := []struct {
+		name    string
 		jobPost *dtos.JobPost
 		isValid bool
 	}{
 		{
 			name: "valid job post",
 			jobPost: &dtos.JobPost{
-				Title:                "title",
-				CompanyName:          "company name",
-				Description:          "description",
+				Title:       "title",
+				CompanyName: "company name",
+				Description: "description",
 			},
 			isValid: true,
 		},
 		{
 			name: "invalid job post",
 			jobPost: &dtos.JobPost{
-				Title:                "title",
-				Description:          "description",
+				Title:       "title",
+				Description: "description",
 			},
 			isValid: false,
 		},
@@ -36,7 +36,7 @@ func TestJobPostValidate(t *testing.T){
 
 	validator := validator.NewValidator()
 
-	for _, tc := range testCases{
+	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			isValid := tc.jobPost.Validate(validator)
 

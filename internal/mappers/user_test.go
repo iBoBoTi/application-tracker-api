@@ -27,11 +27,11 @@ func TestUserDtoMapToUserModel(t *testing.T) {
 
 func TestUserModelMapToUserDto(t *testing.T) {
 	userModel := &models.User{
-		FirstName: "FirstName",
-		LastName:  "LastName",
-		Email:     "email@email.com",
-		PasswordHash:  "password",
-		UserType:  "admin",
+		FirstName:    "FirstName",
+		LastName:     "LastName",
+		Email:        "email@email.com",
+		PasswordHash: "password",
+		UserType:     "admin",
 	}
 
 	userDto := mappers.UserModelMapToUserDto(userModel)

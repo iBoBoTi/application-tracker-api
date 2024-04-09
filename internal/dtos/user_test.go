@@ -8,53 +8,53 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUserValidate(t *testing.T){
+func TestUserValidate(t *testing.T) {
 
-	testCases := []struct{
-		name string
-		user *dtos.User
+	testCases := []struct {
+		name    string
+		user    *dtos.User
 		isValid bool
 	}{
 		{
 			name: "valid user details",
 			user: &dtos.User{
-				FirstName: "FirstName",
-				LastName:  "LastName",
-				Email:     "email@email.com",
-				Password:  "password",
-				ConfirmPassword:  "password",
+				FirstName:       "FirstName",
+				LastName:        "LastName",
+				Email:           "email@email.com",
+				Password:        "password",
+				ConfirmPassword: "password",
 			},
 			isValid: true,
 		},
 		{
 			name: "invalid user details caused by empty first name",
 			user: &dtos.User{
-				LastName:  "LastName",
-				Email:     "email@email.com",
-				Password:  "password",
-				ConfirmPassword:  "password",
+				LastName:        "LastName",
+				Email:           "email@email.com",
+				Password:        "password",
+				ConfirmPassword: "password",
 			},
 			isValid: false,
 		},
 		{
 			name: "invalid user details caused by invalid email",
 			user: &dtos.User{
-				FirstName: "FirstName",
-				LastName:  "LastName",
-				Email:     "email.com",
-				Password:  "password",
-				ConfirmPassword:  "password",
+				FirstName:       "FirstName",
+				LastName:        "LastName",
+				Email:           "email.com",
+				Password:        "password",
+				ConfirmPassword: "password",
 			},
 			isValid: false,
 		},
 		{
 			name: "invalid user details caused by password not equal to confirm password",
 			user: &dtos.User{
-				FirstName: "FirstName",
-				LastName:  "LastName",
-				Email:     "email@email.com",
-				Password:  "password",
-				ConfirmPassword:  "confirm",
+				FirstName:       "FirstName",
+				LastName:        "LastName",
+				Email:           "email@email.com",
+				Password:        "password",
+				ConfirmPassword: "confirm",
 			},
 			isValid: false,
 		},
@@ -62,7 +62,7 @@ func TestUserValidate(t *testing.T){
 
 	validator := validator.NewValidator()
 
-	for _, tc := range testCases{
+	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			isValid := tc.user.Validate(validator)
 
@@ -71,16 +71,16 @@ func TestUserValidate(t *testing.T){
 	}
 }
 
-func TestLoginValidate(t *testing.T){
-	testCases := []struct{
-		name string
+func TestLoginValidate(t *testing.T) {
+	testCases := []struct {
+		name     string
 		loginReq *dtos.LoginRequest
-		isValid bool
+		isValid  bool
 	}{
 		{
 			name: "valid login request",
 			loginReq: &dtos.LoginRequest{
-				Email: "email@email.com",
+				Email:    "email@email.com",
 				Password: "password",
 			},
 			isValid: true,
@@ -99,12 +99,11 @@ func TestLoginValidate(t *testing.T){
 			},
 			isValid: false,
 		},
-
 	}
 
 	validator := validator.NewValidator()
 
-	for _, tc := range testCases{
+	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			isValid := tc.loginReq.Validate(validator)
 
@@ -113,25 +112,25 @@ func TestLoginValidate(t *testing.T){
 	}
 }
 
-func TestIsEmail(t *testing.T){
-	testCases := []struct{
-		name string
-		email string
+func TestIsEmail(t *testing.T) {
+	testCases := []struct {
+		name         string
+		email        string
 		isValidEmail bool
 	}{
 		{
-			name: "valid email",
-			email: "email@email.com",
+			name:         "valid email",
+			email:        "email@email.com",
 			isValidEmail: true,
 		},
 		{
-			name: "invalid email",
-			email: "randomemail",
+			name:         "invalid email",
+			email:        "randomemail",
 			isValidEmail: false,
 		},
 	}
 
-	for _, tc := range testCases{
+	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			isValid := dtos.IsEmail(tc.email)
 

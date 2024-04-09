@@ -18,14 +18,13 @@ import (
 )
 
 type Server struct {
-	Router    *gin.Engine
-	Config    config.Config
-	Logger    log.Logger
-	wg        sync.WaitGroup
-	DB        *models.Database
-	BuildTime string
-	Version   string
-	// Authenticator           *security.Authenticator
+	Router     *gin.Engine
+	Config     config.Config
+	Logger     log.Logger
+	wg         sync.WaitGroup
+	DB         *models.Database
+	BuildTime  string
+	Version    string
 	TokenMaker security.Maker
 }
 

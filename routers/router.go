@@ -41,6 +41,9 @@ func SetupRouter(srv *server.Server) {
 	v1.GET("/job-posts", jobPostHandler.GetAllJobPosts)
 	v1.GET("/job-posts/:id", jobPostHandler.GetJobPostByID)
 
+	applicantHandler := handlers.NewApplicantHandler(service.NewApplicantService(repository.NewApplicantRepository(srv.DB.GormDB), repository.NewJobPostRepository(srv.DB.GormDB)))
+	v1.POST("/job-posts/:id/applicants", applicantHandler.CreateApplicant)
+
 	v1.Use(srv.ApplyAuthentication())
 	v1.POST("/users/job-posts", jobPostHandler.CreateJobPost)
 	v1.GET("/users/job-posts", jobPostHandler.GetUserJobPosts)

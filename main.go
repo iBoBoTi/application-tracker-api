@@ -11,6 +11,8 @@ import (
 	"github.com/iBoBoTi/ats/internal/models"
 	"github.com/iBoBoTi/ats/routers"
 	"github.com/iBoBoTi/ats/server"
+
+	"github.com/unidoc/unipdf/v3/common/license"
 )
 
 // build time variables
@@ -18,6 +20,19 @@ var (
 	buildTime string
 	version   string
 )
+
+func init() {
+	// Make sure to load your metered License API key prior to using the library.
+	// If you need a key, you can sign up and create a free one at https://cloud.unidoc.io
+	cfg, err := config.Load(".")
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = license.SetMeteredKey(cfg.UNIDOC_LICENSE_API_KEY)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 func main() {
 
