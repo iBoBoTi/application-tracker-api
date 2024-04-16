@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -147,8 +146,6 @@ func (a *applicantHandler) GetApplicantByJobID(ctx *gin.Context) {
 		server.ErrorJSONResponse(ctx, http.StatusUnprocessableEntity, errors.New("invalid applicant id param"))
 		return
 	}
-
-	log.Println("HEEEEEEEEEEEEEERRRRRR")
 
 	applicant, err := a.applicantService.GetApplicantByJobID(id, jobID)
 	if err != nil {
